@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: mce-project
+  namespace: argocd
+spec:
+  sourceRepos:
+    - '*'
+  destinations:
+    - namespace: mce
+      server: https://kubernetes.default.svc
+  description: Multi-cloud ecommerce microservices project
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'

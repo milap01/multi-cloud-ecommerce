@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cart
+  namespace: mce
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cart
+  template:
+    metadata:
+      labels:
+        app: cart
+    spec:
+      containers:
+        - name: cart
+          image: <AWS_ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/cart-repo-mce:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: CART_TABLE
+              value: "cart-table"

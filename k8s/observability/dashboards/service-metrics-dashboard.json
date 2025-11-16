@@ -1,0 +1,39 @@
+{
+  "title": "Service Metrics - Basic",
+  "panels": [
+    {
+      "type": "graph",
+      "title": "Requests per second (RPS) - frontend",
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total{job=\"frontend\"}[1m]))",
+          "legendFormat": "frontend"
+        }
+      ],
+      "gridPos": {"h":4,"w":12,"x":0,"y":0}
+    },
+    {
+      "type": "graph",
+      "title": "Error rate (5xx) - frontend",
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total{job=\"frontend\",status=~\"5..\"}[1m])) / sum(rate(http_requests_total{job=\"frontend\"}[1m]))",
+          "legendFormat": "frontend error rate"
+        }
+      ],
+      "gridPos": {"h":4,"w":12,"x":12,"y":0}
+    },
+    {
+      "type": "graph",
+      "title": "p95 latency (s) - frontend",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"frontend\"}[5m])) by (le))",
+          "legendFormat": "frontend p95"
+        }
+      ],
+      "gridPos": {"h":4,"w":24,"x":0,"y":4}
+    }
+  ],
+  "schemaVersion": 16
+}

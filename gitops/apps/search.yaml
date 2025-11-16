@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: search
+  namespace: argocd
+spec:
+  project: mce-project
+  source:
+    repoURL: https://github.com/milap01/multi-cloud-ecommerce.git
+    targetRevision: main
+    path: k8s/search
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mce
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

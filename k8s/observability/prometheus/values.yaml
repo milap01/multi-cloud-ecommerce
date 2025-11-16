@@ -1,0 +1,6 @@
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelector:
+      matchLabels:
+        team: mce
+    scrapeInterval: "10s"
