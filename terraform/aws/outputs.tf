@@ -4,6 +4,8 @@ output "rds_endpoint" {
 
 output "msk_bootstrap_brokers_tls" {
   value = aws_msk_cluster.kafka.bootstrap_brokers_tls
+  # FIX: Explicit dependency added to ensure the cluster is ACTIVE before reading output.
+  depends_on = [aws_msk_cluster.kafka]
 }
 
 output "ecr_repositories" {

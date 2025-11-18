@@ -26,7 +26,7 @@ resource "aws_db_instance" "postgres" {
   engine                  = "postgres"
   instance_class          = "db.t3.micro"
   allocated_storage       = 20
-  username                = "admin"
+  username                = "dbuser"
   password                = var.db_password
   db_name                 = "ecommerce"
   skip_final_snapshot     = true

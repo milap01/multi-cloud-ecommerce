@@ -1,4 +1,6 @@
-# S3 Gateway Endpoint (required for private S3 access)
+// File: CloudComputingAssignment/terraform/aws/endpoints.tf
+
+// S3 Gateway Endpoint (required for private S3 access)
 resource "aws_vpc_endpoint" "s3" {
   vpc_id       = aws_vpc.main.id
   service_name = "com.amazonaws.${var.region}.s3"
@@ -8,7 +10,7 @@ resource "aws_vpc_endpoint" "s3" {
   ]
 }
 
-# ECR API endpoint (interface)
+// ECR API endpoint (interface)
 resource "aws_vpc_endpoint" "ecr_api" {
   vpc_id            = aws_vpc.main.id
   service_name      = "com.amazonaws.${var.region}.ecr.api"
@@ -17,7 +19,7 @@ resource "aws_vpc_endpoint" "ecr_api" {
   security_group_ids = [aws_security_group.vpc_endpoints.id]
 }
 
-# ECR DKR endpoint (interface)
+// ECR DKR endpoint (interface)
 resource "aws_vpc_endpoint" "ecr_dkr" {
   vpc_id            = aws_vpc.main.id
   service_name      = "com.amazonaws.${var.region}.ecr.dkr"
@@ -26,7 +28,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
   security_group_ids = [aws_security_group.vpc_endpoints.id]
 }
 
-# CloudWatch Logs (interface)
+// CloudWatch Logs (interface)
 resource "aws_vpc_endpoint" "logs" {
   vpc_id            = aws_vpc.main.id
   service_name      = "com.amazonaws.${var.region}.logs"
@@ -35,13 +37,23 @@ resource "aws_vpc_endpoint" "logs" {
   security_group_ids = [aws_security_group.vpc_endpoints.id]
 }
 
-# STS (interface) - for certain auth flows
+// STS (interface) - for certain auth flows
 resource "aws_vpc_endpoint" "sts" {
   vpc_id            = aws_vpc.main.id
   service_name      = "com.amazonaws.${var.region}.sts"
   vpc_endpoint_type = "Interface"
   subnet_ids        = aws_subnet.private[*].id
   security_group_ids = [aws_security_group.vpc_endpoints.id]
+}
+
+// *** CRITICAL FIX: Add EKS API Endpoint ***
+resource "aws_vpc_endpoint" "eks_api" {
+  vpc_id              = aws_vpc.main.id
+  service_name        = "com.amazonaws.${var.region}.eks"
+  vpc_endpoint_type   = "Interface"
+  subnet_ids          = aws_subnet.private[*].id
+  security_group_ids  = [aws_security_group.vpc_endpoints.id]
+  private_dns_enabled = true
 }
 
 resource "aws_security_group" "vpc_endpoints" {

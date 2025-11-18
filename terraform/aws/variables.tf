@@ -1,6 +1,6 @@
 variable "project_suffix" {
   type    = string
-  default = "mce"
+  default = "mce-2"
 }
 
 variable "region" {
@@ -11,6 +11,7 @@ variable "region" {
 variable "db_password" {
   type      = string
   sensitive = true
+  
 }
 
 variable "vpc_cidr" {
