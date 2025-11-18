@@ -1,69 +1,59 @@
 import os
 import json
-from pyflink.common import SimpleStringSchema, Types, WatermarkStrategy
-from pyflink.datastream import StreamExecutionEnvironment, TimeCharacteristic
+from pyflink.common import SimpleStringSchema, Types
+from pyflink.datastream import StreamExecutionEnvironment
 from pyflink.datastream.connectors.kafka import FlinkKafkaConsumer, FlinkKafkaProducer
 from pyflink.datastream.window import TumblingProcessingTimeWindows
 from pyflink.common.time import Time
 
 def process_orders():
-    # 1. Set up the execution environment
     env = StreamExecutionEnvironment.get_execution_environment()
-    env.set_stream_time_characteristic(TimeCharacteristic.ProcessingTime)
     
-    # Ensure you pass the kafka jar when submitting the job!
-    # e.g. --jar flink-sql-connector-kafka-*.jar
+    # Azure Event Hubs (Kafka) Configuration
+    # These should be loaded from env vars in production
+    event_hub_namespace = "mce-events-ns-mce" # From your terraform
+    connection_string = os.environ.get("EVENT_HUB_CONN_STRING")
+    
+    # SASL Config for Azure
+    sasl_config = f'org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password="{connection_string}";'
 
-    # 2. Configure Kafka Properties
-    # NOTE: Replace with your actual MSK Bootstrap servers string
     kafka_props = {
-        'bootstrap.servers': 'b-1.mce-msk-xxxx.kafka.us-east-1.amazonaws.com:9092,b-2...',
-        'group.id': 'flink-order-group'
+        'bootstrap.servers': f'{event_hub_namespace}.servicebus.windows.net:9093',
+        'security.protocol': 'SASL_SSL',
+        'sasl.mechanism': 'PLAIN',
+        'sasl.jaas.config': sasl_config,
+        'group.id': 'flink-group'
     }
 
-    # 3. Define the Source (Consumer)
-    # Consuming from the 'orders' topic produced by your Order Service
-    kafka_consumer = FlinkKafkaConsumer(
-        topics='orders',
+    # Consumer: Read from 'orders' (mapped to 'analytics-topic' Event Hub)
+    consumer = FlinkKafkaConsumer(
+        topics='analytics-topic', 
         deserialization_schema=SimpleStringSchema(),
         properties=kafka_props
     )
-    kafka_consumer.set_start_from_earliest()
+    consumer.set_start_from_earliest()
 
-    # 4. Define the Data Stream
-    ds = env.add_source(kafka_consumer)
-
-    # 5. Transformation Logic
-    # Parse JSON, map to (1, 1) tuple for counting, window, and sum
-    # Assuming order looks like {"id": "...", "total": 100, ...}
+    # Processing: Count orders per minute
+    ds = env.add_source(consumer)
     
     def parse_order(data):
         try:
-            order = json.loads(data)
-            # Return a tuple: (constant_key, count)
-            return ("all_orders", 1)
+            return ("order", 1)
         except:
             return ("error", 0)
 
-    aggregated_stream = ds \
+    stats = ds \
         .map(parse_order, output_type=Types.TUPLE([Types.STRING(), Types.INT()])) \
         .key_by(lambda x: x[0]) \
         .window(TumblingProcessingTimeWindows.of(Time.minutes(1))) \
         .sum(1) \
-        .map(lambda x: json.dumps({"window_type": "1min", "count": x[1]}), output_type=Types.STRING())
+        .map(lambda x: json.dumps({"type": "1min-agg", "count": x[1]}), output_type=Types.STRING())
 
-    # 6. Define the Sink (Producer)
-    # Publishing aggregated stats to 'order-stats' topic
-    kafka_producer = FlinkKafkaProducer(
-        topic='order-stats',
-        serialization_schema=SimpleStringSchema(),
-        producer_config=kafka_props
-    )
+    # Producer: Write back to a separate topic/hub (e.g., 'stats-topic')
+    # For now, just print to stdout to verify logic if you don't have a 2nd hub
+    stats.print()
 
-    aggregated_stream.add_sink(kafka_producer)
-
-    # 7. Execute
-    env.execute("Order Aggregation Job")
+    env.execute("Azure Event Hubs Flink Job")
 
 if __name__ == '__main__':
     process_orders()

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flink-job-manager
+  namespace: mce
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flink
+      component: job-manager
+  template:
+    metadata:
+      labels:
+        app: flink
+        component: job-manager
+    spec:
+      containers:
+      - name: job-manager
+        image: flink:1.17-java11
+        args: ["standalone-job", "--job-classname", "process_orders"]
+        ports:
+        - containerPort: 8081
+        env:
+        - name: FLINK_PROPERTIES
+          value: |
+            jobmanager.rpc.address: flink-job-manager
+        # You must mount your python script and dependencies here
+        # Or build a custom Docker image containing process_orders.py
