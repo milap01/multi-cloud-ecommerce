@@ -1,3 +1,10 @@
+# Add this resource to generate a random, compliant password
+resource "random_password" "db_password" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?" # Excludes / @ " and space
+}
+
 resource "aws_db_subnet_group" "default" {
   name       = "mce-db-subnet-${var.project_suffix}"
   subnet_ids = aws_subnet.private[*].id
@@ -27,7 +34,7 @@ resource "aws_db_instance" "postgres" {
   instance_class          = "db.t3.micro"
   allocated_storage       = 20
   username                = "dbuser"
-  password                = var.db_password
+  password                = random_password.db_password.result # Updated to use generated password
   db_name                 = "ecommerce"
   skip_final_snapshot     = true
   publicly_accessible     = false
