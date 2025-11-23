@@ -7,5 +7,5 @@ variable "project_suffix" {
 variable "location" {
   type        = string
   description = "Azure Region"
-  default     = "East US"
+  default     = "East US 2"
 }

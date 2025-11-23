@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: product
-          image: 343938549827.dkr.ecr.us-east-1.amazonaws.com/product-repo-mce:latest
+          image: 343938549827.dkr.ecr.us-east-1.amazonaws.com/product-repo-mce-2
           ports:
             - containerPort: 8000
           resources:

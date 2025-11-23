@@ -7,10 +7,10 @@ data:
   AWS_REGION: "us-east-1"
   AWS_ACCOUNT_ID: "343938549827"
   # Replace these placeholders with Terraform outputs or CI patching:
-  RDS_HOST: "<RDS_HOST_PLACEHOLDER>"
+  RDS_HOST: "mce-postgres-mce-2.c69wsmeo2xks.us-east-1.rds.amazonaws.com"
   RDS_PORT: "5432"
-  KAFKA_BOOTSTRAP: "<KAFKA_BOOTSTRAP_PLACEHOLDER>"     # e.g. b-1.mcekafka.xxxx:9092,b-2...
-  OPENSEARCH_ENDPOINT: "<OPENSEARCH_ENDPOINT_PLACEHOLDER>"  # e.g. https://search-mce-...
+  KAFKA_BOOTSTRAP: "b-1.mcemskmce2.4z190z.c6.kafka.us-east-1.amazonaws.com:9094,b-2.mcemskmce2.4z190z.c6.kafka.us-east-1.amazonaws.com:9094"     # e.g. b-1.mcekafka.xxxx:9092,b-2...
+  OPENSEARCH_ENDPOINT: "vpc-mce-search-mce-2-6nz7ghbiymqaldloeul5znr2om.us-east-1.es.amazonaws.com"  # e.g. https://search-mce-...
   DYNAMODB_TABLE_CART: "mce-cart-mce"
   PRODUCT_SERVICE_URL: "http://product.mce.svc.cluster.local"
   ORDER_SERVICE_URL: "http://order.mce.svc.cluster.local"

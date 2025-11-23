@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: cart
-          image: 343938549827.dkr.ecr.us-east-1.amazonaws.com/cart-repo-mce:latest
+          image: 343938549827.dkr.ecr.us-east-1.amazonaws.com/cart-repo-mce-2
           ports:
             - containerPort: 8000
           resources:
@@ -30,6 +30,16 @@ spec:
           env:
             - name: SERVICE_NAME
               value: "cart"
+            - name: AWS_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: common-config
+                  key: AWS_REGION
+            - name: AWS_DEFAULT_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: common-config
+                  key: AWS_REGION
             - name: DYNAMODB_TABLE
               valueFrom:
                 configMapKeyRef:
@@ -45,5 +55,7 @@ spec:
                 configMapKeyRef:
                   name: common-config
                   key: KAFKA_BOOTSTRAP
+
+
 
 

@@ -23,3 +23,8 @@ output "eks_cluster_endpoint" {
 output "opensearch_endpoint" {
   value = aws_opensearch_domain.search.endpoint
 }
+
+output "db_password" {
+  value     = random_password.db_password.result
+  sensitive = true
+}
