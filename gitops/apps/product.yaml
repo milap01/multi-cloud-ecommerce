@@ -1,4 +1,22 @@
-apiVersion: argopproj.io/v1alpha1
+# apiVersion: argopproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: product
+#   namespace: argocd
+# spec:
+#   project: mce-project
+#   source:
+#     repoURL: https://github.com/milap01/multi-cloud-ecommerce.git
+#     targetRevision: main
+#     path: k8s/product
+#   destination:
+#     server: https://kubernetes.default.svc
+#     namespace: mce
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: product
@@ -6,7 +24,7 @@ metadata:
 spec:
   project: mce-project
   source:
-    repoURL: https://github.com/milap01/multi-cloud-ecommerce.git
+    repoURL: 'https://github.com/milap01/multi-cloud-ecommerce.git'
     targetRevision: main
     path: k8s/product
   destination:
