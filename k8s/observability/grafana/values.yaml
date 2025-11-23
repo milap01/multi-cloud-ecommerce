@@ -9,4 +9,4 @@ datasources:
     datasources:
       - name: Prometheus
         type: prometheus
-        url: http://prometheus-operated.observability.svc.cluster.local:9090
+        url: http://prometheus-operated.mce.svc.cluster.local:9090
