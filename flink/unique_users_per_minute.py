@@ -13,9 +13,6 @@ from pyflink.datastream.functions import ProcessWindowFunction
 from pyflink.datastream.state import ValueStateDescriptor
 from pyflink.common.watermark_strategy import WatermarkStrategy
 
-# NOTE: In actual deployment, you will configure the Kafka-compatible
-# Event Hubs connector via Flink's KafkaSource / KafkaSink
-# Here we focus on the window logic + transformation.
 
 
 class UniqueUsersPerWindow(ProcessWindowFunction):
@@ -67,11 +64,7 @@ def main():
     # Use event time if you want precise time semantics
     env.set_stream_time_characteristic(TimeCharacteristic.EventTime)
 
-    # ========================
-    # Configure Event Hubs (Kafka-compatible) source & sink
-    # ========================
-
-    # These would be passed via env variables/configs in real deployments
+   
     event_hubs_kafka_bootstrap = "mce-streams.servicebus.windows.net:9093"
     event_hubs_sasl_username = "$ConnectionString"
     event_hubs_sasl_password = "<EVENT_HUBS_CONNECTION_STRING>"  # set at deployment
