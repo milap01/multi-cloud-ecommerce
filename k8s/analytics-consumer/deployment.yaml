@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics-consumer
+  namespace: mce
+  labels:
+    app: analytics-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: analytics-consumer
+  template:
+    metadata:
+      labels:
+        app: analytics-consumer
+    spec:
+      containers:
+        - name: analytics-consumer
+          image: your-docker-registry/analytics-consumer:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: EVENT_HUB_CONN_STR_RESULTS
+              valueFrom:
+                secretKeyRef:
+                  name: eventhubs-results-secret
+                  key: connectionString
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 20
