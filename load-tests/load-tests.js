@@ -13,7 +13,7 @@ export const options = {
 export default function () {
   // Replace with your actual Frontend LoadBalancer URL after deployment
   // e.g., 'http://a1b2c3d4...us-east-1.elb.amazonaws.com'
-  const BASE_URL = __ENV.FRONTEND_URL || 'http://localhost:8000';
+  const BASE_URL = "http://a710c722c54fe438b953bb18524da56a-1777388317.us-east-1.elb.amazonaws.com";
 
   // 1. View Products
   let res = http.get(`${BASE_URL}/products`);

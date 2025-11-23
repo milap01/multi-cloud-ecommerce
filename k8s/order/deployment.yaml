@@ -17,7 +17,11 @@ spec:
     spec:
       containers:
         - name: order
+<<<<<<< HEAD
           image: 343938549827.dkr.ecr.us-east-1.amazonaws.com/order-repo-mce-2
+=======
+          image: 150429528430.dkr.ecr.us-east-1.amazonaws.com/order-repo-mce-2:latest
+>>>>>>> 604119d35203258af682b42100d5a4008a956b65
           ports:
             - containerPort: 8000
           resources:
@@ -40,11 +44,13 @@ spec:
                 secretKeyRef:
                   name: mce-secrets
                   key: POSTGRES_USER
-            - name: DB_PASSWORD
+            - name: DB_PASS
               valueFrom:
                 secretKeyRef:
                   name: mce-secrets
                   key: POSTGRES_PASSWORD
+            - name: DB_NAME
+              value: "ecommerce"
             - name: PRODUCT_SERVICE_URL
               valueFrom:
                 configMapKeyRef:

@@ -3,8 +3,8 @@ resource "aws_opensearch_domain" "search" {
   engine_version  = "OpenSearch_3.1"
 
   cluster_config {
-    instance_type  = "t3.small.search"
-    instance_count = 2
+    instance_type          = "t3.small.search"
+    instance_count         = 2
     zone_awareness_enabled = true
   }
 
@@ -27,5 +27,5 @@ resource "aws_opensearch_domain" "search" {
   }
 
   tags = { Project = var.project_suffix }
-}
 
+}

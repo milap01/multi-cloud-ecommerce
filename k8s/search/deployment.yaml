@@ -17,7 +17,11 @@ spec:
     spec:
       containers:
         - name: search
+<<<<<<< HEAD
           image: 343938549827.dkr.ecr.us-east-1.amazonaws.com/search-repo-mce-2
+=======
+          image: 150429528430.dkr.ecr.us-east-1.amazonaws.com/search-repo-mce-2:latest
+>>>>>>> 604119d35203258af682b42100d5a4008a956b65
           ports:
             - containerPort: 8000
           resources:

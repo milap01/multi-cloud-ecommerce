@@ -3,6 +3,7 @@ from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_
 from fastapi.responses import Response
 import httpx
 import os
+<<<<<<< HEAD
 import logging
 import time
 
@@ -20,6 +21,16 @@ PRODUCT_SERVICE_URL = os.getenv("PRODUCT_SERVICE_URL", "http://product.mce.svc.c
 CART_SERVICE_URL = os.getenv("CART_SERVICE_URL", "http://cart.mce.svc.cluster.local")
 ORDER_SERVICE_URL = os.getenv("ORDER_SERVICE_URL", "http://order.mce.svc.cluster.local")
 SEARCH_SERVICE_URL = os.getenv("SEARCH_SERVICE_URL", "http://search.mce.svc.cluster.local")
+=======
+
+app = FastAPI(title="Frontend Service")
+
+# FIX: Read from Environment Variables (injected by Kubernetes)
+# Fallback to defaults only if env vars are missing
+PRODUCT_SERVICE_URL = os.getenv("PRODUCT_SERVICE_URL", "http://product-service:8000")
+CART_SERVICE_URL = os.getenv("CART_SERVICE_URL", "http://cart-service:8000")
+ORDER_SERVICE_URL = os.getenv("ORDER_SERVICE_URL", "http://order-service:8000")
+>>>>>>> 604119d35203258af682b42100d5a4008a956b65
 
 @app.get("/")
 def health():
@@ -31,6 +42,7 @@ def metrics():
 
 @app.get("/products")
 async def get_products():
+<<<<<<< HEAD
     start_time = time.time()
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
@@ -67,6 +79,12 @@ async def get_product(product_id: int):
         logger.error(f"Error fetching product {product_id}: {e}")
         REQUEST_COUNT.labels(method='GET', endpoint='/products/:id', status='500').inc()
         raise HTTPException(status_code=500, detail=str(e))
+=======
+    async with httpx.AsyncClient() as client:
+        # Use the variable, which now contains the correct K8s URL
+        r = await client.get(f"{PRODUCT_SERVICE_URL}/products")
+        return r.json()
+>>>>>>> 604119d35203258af682b42100d5a4008a956b65
 
 @app.post("/cart/add")
 async def add_to_cart(item: dict):
@@ -104,6 +122,7 @@ async def get_cart(user_id: str):
 
 @app.post("/order/checkout")
 async def checkout(order: dict):
+<<<<<<< HEAD
     start_time = time.time()
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
@@ -135,3 +154,8 @@ async def search(q: str):
         logger.error(f"Error searching: {e}")
         REQUEST_COUNT.labels(method='GET', endpoint='/search', status='500').inc()
         raise HTTPException(status_code=500, detail=str(e))
+=======
+    async with httpx.AsyncClient() as client:
+        r = await client.post(f"{ORDER_SERVICE_URL}/order/checkout", json=order)
+        return r.json()
+>>>>>>> 604119d35203258af682b42100d5a4008a956b65

@@ -1,17 +1,17 @@
 # apiVersion: argoproj.io/v1alpha1
 # kind: Application
 # metadata:
-#   name: mce-apps
+#   name: events-producer
 #   namespace: argocd
 # spec:
 #   project: mce-project
 #   source:
 #     repoURL: https://github.com/milap01/multi-cloud-ecommerce.git
 #     targetRevision: main
-#     path: gitops/apps
+#     path: k8s/events-producer
 #   destination:
 #     server: https://kubernetes.default.svc
-#     namespace: argocd
+#     namespace: mce
 #   syncPolicy:
 #     automated:
 #       prune: true
@@ -19,17 +19,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: mce-root
+  name: event-producer
   namespace: argocd
 spec:
   project: mce-project
   source:
     repoURL: 'https://github.com/milap01/multi-cloud-ecommerce.git'
     targetRevision: main
-    path: gitops/apps
+    path: k8s/event-producer
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: mce
   syncPolicy:
     automated:
       prune: true

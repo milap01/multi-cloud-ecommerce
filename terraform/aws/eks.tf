@@ -1,24 +1,24 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.0"  # Use stable v20.x instead of v21.0.0
+  version = "~> 20.0" # Stick to v20.x as v21 may not be released/stable yet
 
-  # Cluster basic configuration
+  # Cluster Basic Config (Top-level arguments)
   cluster_name    = "mce-eks-${var.project_suffix}"
-  cluster_version = "1.30"  # Use a released version (1.30 is stable)
+  cluster_version = "1.30"
 
-  # VPC + Subnets
+  # Network Config
   vpc_id                   = aws_vpc.main.id
   subnet_ids               = aws_subnet.private[*].id
   control_plane_subnet_ids = aws_subnet.private[*].id
 
-  # Cluster endpoint access
-  cluster_endpoint_private_access = true
+  # Endpoint Access (Top-level arguments)
   cluster_endpoint_public_access  = true
+  cluster_endpoint_private_access = true
 
-  # Enable IRSA
+  # IRSA
   enable_irsa = true
 
-  # Cluster addons
+  # Add-ons (Correct argument name is 'cluster_addons')
   cluster_addons = {
     vpc-cni = {
       most_recent = true
@@ -36,7 +36,7 @@ module "eks" {
     }
   }
 
-  # Managed node groups
+  # Managed Node Groups
   eks_managed_node_groups = {
     mce_nodes = {
       desired_size = 2
@@ -44,9 +44,6 @@ module "eks" {
       max_size     = 4
 
       instance_types = ["t3.medium"]
-      
-      # Let the module create the IAM role automatically
-      # Remove iam_role_arn unless you have specific requirements
     }
   }
 
