@@ -1,52 +1,11 @@
 ---
-# Source: loki-stack/charts/loki/templates/podsecuritypolicy.yaml
-apiVersion: policy/v1beta1
-kind: PodSecurityPolicy
-metadata:
-  name: loki
-  labels:
-    app: loki
-    chart: loki-2.14.1
-    release: loki
-    heritage: Helm
-spec:
-  privileged: false
-  allowPrivilegeEscalation: false
-  volumes:
-    - 'configMap'
-    - 'emptyDir'
-    - 'persistentVolumeClaim'
-    - 'secret'
-    - 'projected'
-    - 'downwardAPI'
-  hostNetwork: false
-  hostIPC: false
-  hostPID: false
-  runAsUser:
-    rule: 'MustRunAsNonRoot'
-  seLinux:
-    rule: 'RunAsAny'
-  supplementalGroups:
-    rule: 'MustRunAs'
-    ranges:
-    - min: 1
-      max: 65535
-  fsGroup:
-    rule: 'MustRunAs'
-    ranges:
-    - min: 1
-      max: 65535
-  readOnlyRootFilesystem: true
-  requiredDropCapabilities:
-    - ALL
----
 # Source: loki-stack/charts/loki/templates/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
     app: loki
-    chart: loki-2.14.1
+    chart: loki-2.16.0
     release: loki
     heritage: Helm
   annotations:
@@ -62,11 +21,12 @@ metadata:
   name: loki-promtail
   namespace: observability
   labels:
-    helm.sh/chart: promtail-6.3.0
+    helm.sh/chart: promtail-6.17.0
     app.kubernetes.io/name: promtail
     app.kubernetes.io/instance: loki
-    app.kubernetes.io/version: "2.6.1"
+    app.kubernetes.io/version: "3.5.1"
     app.kubernetes.io/managed-by: Helm
+automountServiceAccountToken: true
 ---
 # Source: loki-stack/charts/loki/templates/secret.yaml
 apiVersion: v1
@@ -76,7 +36,7 @@ metadata:
   namespace: observability
   labels:
     app: loki
-    chart: loki-2.14.1
+    chart: loki-2.16.0
     release: loki
     heritage: Helm
 data:
@@ -89,15 +49,16 @@ metadata:
   name: loki-promtail
   namespace: observability
   labels:
-    helm.sh/chart: promtail-6.3.0
+    helm.sh/chart: promtail-6.17.0
     app.kubernetes.io/name: promtail
     app.kubernetes.io/instance: loki
-    app.kubernetes.io/version: "2.6.1"
+    app.kubernetes.io/version: "3.5.1"
     app.kubernetes.io/managed-by: Helm
 stringData:
   promtail.yaml: |
     server:
       log_level: info
+      log_format: logfmt
       http_listen_port: 3101
       
     
@@ -130,7 +91,7 @@ stringData:
             target_label: app
           - source_labels:
               - __meta_kubernetes_pod_label_app_kubernetes_io_instance
-              - __meta_kubernetes_pod_label_release
+              - __meta_kubernetes_pod_label_instance
             regex: ^;*([^;]+)(;.*)?$
             action: replace
             target_label: instance
@@ -179,6 +140,14 @@ stringData:
             - __meta_kubernetes_pod_annotation_kubernetes_io_config_hash
             - __meta_kubernetes_pod_container_name
             target_label: __path__
+      
+      
+    
+    limits_config:
+      
+    
+    tracing:
+      enabled: false
 ---
 # Source: loki-stack/templates/datasources.yaml
 apiVersion: v1
@@ -188,7 +157,7 @@ metadata:
   namespace: observability
   labels:
     app: loki-stack
-    chart: loki-stack-2.8.0
+    chart: loki-stack-2.10.3
     release: loki
     heritage: Helm
     grafana_datasource: "1"
@@ -202,6 +171,8 @@ data:
       url: "http://loki:3100"
       version: 1
       isDefault: true
+      jsonData:
+        {}
 ---
 # Source: loki-stack/templates/tests/loki-test-configmap.yaml
 apiVersion: v1
@@ -210,7 +181,7 @@ metadata:
   name: loki-loki-stack-test
   labels:
     app: loki-stack
-    chart: loki-stack-2.8.0
+    chart: loki-stack-2.10.3
     release: loki
     heritage: Helm
 data:
@@ -252,10 +223,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: loki-promtail
   labels:
-    helm.sh/chart: promtail-6.3.0
+    helm.sh/chart: promtail-6.17.0
     app.kubernetes.io/name: promtail
     app.kubernetes.io/instance: loki
-    app.kubernetes.io/version: "2.6.1"
+    app.kubernetes.io/version: "3.5.1"
     app.kubernetes.io/managed-by: Helm
 rules:
   - apiGroups:
@@ -277,10 +248,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: loki-promtail
   labels:
-    helm.sh/chart: promtail-6.3.0
+    helm.sh/chart: promtail-6.17.0
     app.kubernetes.io/name: promtail
     app.kubernetes.io/instance: loki
-    app.kubernetes.io/version: "2.6.1"
+    app.kubernetes.io/version: "3.5.1"
     app.kubernetes.io/managed-by: Helm
 subjects:
   - kind: ServiceAccount
@@ -299,7 +270,7 @@ metadata:
   namespace: observability
   labels:
     app: loki
-    chart: loki-2.14.1
+    chart: loki-2.16.0
     release: loki
     heritage: Helm
 rules:
@@ -316,7 +287,7 @@ metadata:
   namespace: observability
   labels:
     app: loki
-    chart: loki-2.14.1
+    chart: loki-2.16.0
     release: loki
     heritage: Helm
 roleRef:
@@ -335,7 +306,7 @@ metadata:
   namespace: observability
   labels:
     app: loki
-    chart: loki-2.14.1
+    chart: loki-2.16.0
     release: loki
     heritage: Helm
     variant: headless
@@ -358,7 +329,7 @@ metadata:
   namespace: observability
   labels:
     app: loki
-    chart: loki-2.14.1
+    chart: loki-2.16.0
     release: loki
     heritage: Helm
 spec:
@@ -382,7 +353,7 @@ metadata:
   namespace: observability
   labels:
     app: loki
-    chart: loki-2.14.1
+    chart: loki-2.16.0
     release: loki
     heritage: Helm
   annotations:
@@ -405,10 +376,10 @@ metadata:
   name: loki-promtail
   namespace: observability
   labels:
-    helm.sh/chart: promtail-6.3.0
+    helm.sh/chart: promtail-6.17.0
     app.kubernetes.io/name: promtail
     app.kubernetes.io/instance: loki
-    app.kubernetes.io/version: "2.6.1"
+    app.kubernetes.io/version: "3.5.1"
     app.kubernetes.io/managed-by: Helm
 spec:
   selector:
@@ -423,15 +394,17 @@ spec:
         app.kubernetes.io/name: promtail
         app.kubernetes.io/instance: loki
       annotations:
-        checksum/config: ab16ab9d3236f3cf005c3e39292b586f4f80606e8e78662eb6de7a546c9c0b79
+        checksum/config: 0f49fcd7a8fab642f9644e0a4d67b9f2bf9ce3e2cbf1f2ebfa7a301dbd59a7e0
     spec:
       serviceAccountName: loki-promtail
+      automountServiceAccountToken: true
+      enableServiceLinks: true
       securityContext:
         runAsGroup: 0
         runAsUser: 0
       containers:
         - name: promtail
-          image: "docker.io/grafana/promtail:2.6.1"
+          image: "docker.io/grafana/promtail:3.5.1"
           imagePullPolicy: IfNotPresent
           args:
             - "-config.file=/etc/promtail/promtail.yaml"
@@ -464,7 +437,7 @@ spec:
           readinessProbe:
             failureThreshold: 5
             httpGet:
-              path: /ready
+              path: '/ready'
               port: http-metrics
             initialDelaySeconds: 10
             periodSeconds: 10
@@ -499,7 +472,7 @@ metadata:
   namespace: observability
   labels:
     app: loki
-    chart: loki-2.14.1
+    chart: loki-2.16.0
     release: loki
     heritage: Helm
   annotations:
@@ -521,7 +494,7 @@ spec:
         name: loki
         release: loki
       annotations:
-        checksum/config: aaf2f6c1458a2ec7a41a89049033508f995454471476dd561ec764a6a6b8751b
+        checksum/config: 8513c6dec898b2da52aae0a2d13648bfac3d3b2b459d63734e38aa1503dae05c
         prometheus.io/port: http-metrics
         prometheus.io/scrape: "true"
     spec:
@@ -596,14 +569,14 @@ metadata:
     "helm.sh/hook": test-success
   labels:
     app: loki-stack
-    chart: loki-stack-2.8.0
+    chart: loki-stack-2.10.3
     release: loki
     heritage: Helm
   name: loki-loki-stack-test
 spec:
   containers:
   - name: test
-    image: "bats/bats:v1.1.0"
+    image: "bats/bats:1.8.2"
     imagePullPolicy: ""
     args:
     - /var/lib/loki/test.sh
