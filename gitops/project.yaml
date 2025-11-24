@@ -13,6 +13,25 @@
 #   clusterResourceWhitelist:
 #     - group: '*'
 #       kind: '*'
+# apiVersion: argoproj.io/v1alpha1
+# kind: AppProject
+# metadata:
+#   name: mce-project
+#   namespace: argocd
+# spec:
+#   description: Multi-cloud ecommerce microservices project
+#   # Which Git repos are allowed
+#   sourceRepos:
+#     - 'https://github.com/milap01/multi-cloud-ecommerce.git'
+#   # Where ArgoCD is allowed to deploy things
+#   destinations:
+#     - namespace: mce
+#       server: https://kubernetes.default.svc
+#     - namespace: argocd
+#       server: https://kubernetes.default.svc
+#   clusterResourceWhitelist:
+#     - group: '*'
+#       kind: '*'
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
@@ -20,14 +39,14 @@ metadata:
   namespace: argocd
 spec:
   description: Multi-cloud ecommerce microservices project
-  # Which Git repos are allowed
   sourceRepos:
     - 'https://github.com/milap01/multi-cloud-ecommerce.git'
-  # Where ArgoCD is allowed to deploy things
   destinations:
     - namespace: mce
       server: https://kubernetes.default.svc
     - namespace: argocd
+      server: https://kubernetes.default.svc
+    - namespace: observability
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: '*'
