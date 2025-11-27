@@ -34,6 +34,11 @@ resource "aws_iam_role_policy_attachment" "worker_AmazonSSMManagedInstanceCore" 
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+resource "aws_iam_role_policy_attachment" "worker_DynamoDBFullAccess" {
+  role       = aws_iam_role.eks_node.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+}
+
 # IAM Role for Lambda Function
 resource "aws_iam_role" "lambda_role" {
   name = "mce-lambda-role-${var.project_suffix}"

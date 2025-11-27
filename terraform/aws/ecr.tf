@@ -5,7 +5,9 @@ locals {
     "cart",
     "order",
     "search",
-    "events-producer"
+    "events-producer",
+    "analytics-consumer",  # <--- Add this
+    "stream-processor"
   ]
 }
 

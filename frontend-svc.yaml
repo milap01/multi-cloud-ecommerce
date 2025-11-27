@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    argocd.argoproj.io/tracking-id: frontend:/Service:mce/frontend
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"frontend:/Service:mce/frontend"},"name":"frontend","namespace":"mce"},"spec":{"ports":[{"name":"http","port":80,"targetPort":8000}],"selector":{"app":"frontend"},"type":"LoadBalancer"}}
+  creationTimestamp: "2025-11-24T08:23:04Z"
+  finalizers:
+  - service.kubernetes.io/load-balancer-cleanup
+  name: frontend
+  namespace: mce
+  resourceVersion: "10787"
+  uid: 382497f9-7e80-4a00-8c92-390831bd0239
+spec:
+  allocateLoadBalancerNodePorts: true
+  clusterIP: 172.20.241.108
+  clusterIPs:
+  - 172.20.241.108
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: http
+    nodePort: 31864
+    port: 80
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    app: frontend
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - hostname: a382497f97e804a008c92390831bd023-1438871345.us-east-1.elb.amazonaws.com

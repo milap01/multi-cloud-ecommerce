@@ -17,11 +17,9 @@ spec:
     spec:
       containers:
         - name: cart
-<<<<<<< HEAD
-          image: 343938549827.dkr.ecr.us-east-1.amazonaws.com/cart-repo-mce-2
-=======
-          image: 150429528430.dkr.ecr.us-east-1.amazonaws.com/cart-repo-mce-2:latest
->>>>>>> 604119d35203258af682b42100d5a4008a956b65
+
+          image: 343938549827.dkr.ecr.us-east-1.amazonaws.com/cart-repo-mce-2:latest
+
           ports:
             - containerPort: 8000
           resources:

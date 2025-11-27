@@ -24,7 +24,8 @@ DB_PASS = os.getenv("DB_PASS")
 
 producer = Producer({
     "bootstrap.servers": KAFKA_BOOTSTRAP,
-    "client.id": "order-service"
+    "client.id": "order-service",
+    "security.protocol": "SSL"
 })
 
 def get_conn():

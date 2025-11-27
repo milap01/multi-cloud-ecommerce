@@ -74,3 +74,22 @@ resource "aws_security_group" "vpc_endpoints" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_vpc_endpoint" "dynamodb" {
+  vpc_id       = aws_vpc.main.id
+  service_name = "com.amazonaws.${var.region}.dynamodb"
+  vpc_endpoint_type = "Gateway"
+  
+  # Gateway endpoints use Route Tables, not Subnets/SGs
+  route_table_ids = [
+    aws_route_table.private.id,
+    aws_route_table.public.id
+  ]
+
+  tags = {
+    Name = "mce-dynamodb-endpoint"
+  }
+}
+
+
+

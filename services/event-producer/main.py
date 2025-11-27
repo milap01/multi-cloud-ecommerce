@@ -19,7 +19,8 @@ KAFKA_BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092")
 
 producer = Producer({
     "bootstrap.servers": KAFKA_BOOTSTRAP,
-    "client.id": "events-producer"
+    "client.id": "events-producer",
+    "security.protocol": "SSL"
 })
 
 @app.get("/")

@@ -15,7 +15,7 @@ resource "aws_opensearch_domain" "search" {
 
   vpc_options {
     subnet_ids         = aws_subnet.private[*].id
-    security_group_ids = [aws_security_group.msk.id]
+    security_group_ids = [aws_security_group.msk.id, module.eks.node_security_group_id]
   }
 
   domain_endpoint_options {

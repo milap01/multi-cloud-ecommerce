@@ -6,8 +6,8 @@ resource "aws_security_group" "msk" {
 
   # allow TLS from VPC (restrict later)
   ingress {
-    from_port   = 9092
-    to_port     = 9092
+    from_port   = 9094
+    to_port     = 9094
     protocol    = "tcp"
     cidr_blocks = [aws_vpc.main.cidr_block]
   }

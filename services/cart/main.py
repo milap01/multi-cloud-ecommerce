@@ -43,7 +43,8 @@ table = dynamodb.Table(TABLE_NAME)
 try:
     producer = Producer({
         "bootstrap.servers": KAFKA_BOOTSTRAP,
-        "client.id": "cart-service"
+        "client.id": "cart-service",
+        "security.protocol": "SSL"
     })
     logger.info(f"Kafka producer initialized with {KAFKA_BOOTSTRAP}")
 except Exception as e:
@@ -139,14 +140,17 @@ def remove_item(user_id: str, product_id: str):
     except Exception as e:
         logger.error(f"Error removing item: {e}")
         REQUEST_COUNT.labels(method='DELETE', endpoint='/cart/:userId/:productId', status='500').inc()
-docker run -d \
-  --name cart-service \
-  --network mce-network \
-  -p 8002:8000 \
-  -e DYNAMODB_TABLE=mce-cart-local \
-  -e AWS_REGION=us-east-1 \
-  -e AWS_ACCESS_KEY_ID=test \
-  -e AWS_SECRET_ACCESS_KEY=test \
-  -e DYNAMODB_ENDPOINT=http://dynamodb-local:8000 \
-  -e KAFKA_BOOTSTRAP=kafka:9092 \
-  mce-cart:latest        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+# docker run -d \
+#   --name cart-service \
+#   --network mce-network \
+#   -p 8002:8000 \
+#   -e DYNAMODB_TABLE=mce-cart-local \
+#   -e AWS_REGION=us-east-1 \
+#   -e AWS_ACCESS_KEY_ID=test \
+#   -e AWS_SECRET_ACCESS_KEY=test \
+#   -e DYNAMODB_ENDPOINT=http://dynamodb-local:8000 \
+#   -e KAFKA_BOOTSTRAP=kafka:9092 \
+#   mce-cart:latest        raise HTTPException(status_code=500, detail=str(e))
+
+

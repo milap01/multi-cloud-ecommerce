@@ -20,6 +20,7 @@ resource "aws_subnet" "public" {
 
   tags = {
     Name = "mce-public-${count.index}"
+    "kubernetes.io/role/elb" = "1"
   }
 }
 
@@ -32,6 +33,7 @@ resource "aws_subnet" "private" {
 
   tags = {
     Name = "mce-private-${count.index}"
+    "kubernetes.io/role/internal-elb" = "1"
   }
 }
 

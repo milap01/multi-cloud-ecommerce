@@ -1,11 +1,31 @@
-variable "project_suffix" {
-  type        = string
-  description = "Suffix to ensure unique resource names"
-  default     = "mce"
+variable "resource_group_name" {
+  default = "mce-azure-rg"
 }
 
 variable "location" {
-  type        = string
-  description = "Azure Region"
-  default     = "East US 2"
+  default = "East US"
+}
+
+variable "aks_name" {
+  default = "mce-aks-cluster"
+}
+
+variable "eventhub_namespace_name" {
+  default = "mce-streams"
+}
+
+variable "eventhub_events_name" {
+  default = "events"
+}
+
+variable "eventhub_results_name" {
+  default = "results"
+}
+
+variable "k8s_node_count" {
+  default = 1
+}
+
+variable "k8s_node_size" {
+  default = "Standard_B4ms"
 }

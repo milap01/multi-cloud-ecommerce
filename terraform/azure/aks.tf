@@ -1,13 +1,13 @@
 resource "azurerm_kubernetes_cluster" "aks" {
-  name                = "mce-aks-${var.project_suffix}"
+  name                = var.aks_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  dns_prefix          = "mce-aks"
+  dns_prefix          = "mcestreams"
 
   default_node_pool {
-    name       = "default"
-    node_count = 1
-    vm_size    = "Standard_B2s" # Economical size for assignments
+    name       = "nodepool1"
+    node_count = var.k8s_node_count
+    vm_size    = var.k8s_node_size
   }
 
   identity {
@@ -16,15 +16,5 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
   network_profile {
     network_plugin = "azure"
-    network_policy = "azure"
   }
-
-  tags = {
-    Environment = "dev"
-  }
-}
-
-output "aks_kube_config" {
-  value     = azurerm_kubernetes_cluster.aks.kube_config_raw
-  sensitive = true
 }

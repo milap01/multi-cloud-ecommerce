@@ -5,22 +5,16 @@ metadata:
   namespace: mce
 data:
   AWS_REGION: "us-east-1"
-<<<<<<< HEAD
+
   AWS_ACCOUNT_ID: "343938549827"
-  # Replace these placeholders with Terraform outputs or CI patching:
+  
   RDS_HOST: "mce-postgres-mce-2.c69wsmeo2xks.us-east-1.rds.amazonaws.com"
   RDS_PORT: "5432"
-  KAFKA_BOOTSTRAP: "b-1.mcemskmce2.4z190z.c6.kafka.us-east-1.amazonaws.com:9094,b-2.mcemskmce2.4z190z.c6.kafka.us-east-1.amazonaws.com:9094"     # e.g. b-1.mcekafka.xxxx:9092,b-2...
-  OPENSEARCH_ENDPOINT: "vpc-mce-search-mce-2-6nz7ghbiymqaldloeul5znr2om.us-east-1.es.amazonaws.com"  # e.g. https://search-mce-...
-  DYNAMODB_TABLE_CART: "mce-cart-mce"
-=======
-  AWS_ACCOUNT_ID: "150429528430"
-  RDS_HOST: "mce-postgres-mce-2.c41aq4kaqr2l.us-east-1.rds.amazonaws.com"
-  RDS_PORT: "5432"
-  KAFKA_BOOTSTRAP: "b-1.mcemskmce2.podfm1.c19.kafka.us-east-1.amazonaws.com:9094,b-2.mcemskmce2.podfm1.c19.kafka.us-east-1.amazonaws.com:9094"     # e.g. b-1.mcekafka.xxxx:9092,b-2...
-  OPENSEARCH_ENDPOINT: "vpc-mce-search-mce-2-mnfw2kb2p2zuagkxdzrkserpbu.us-east-1.es.amazonaws.com  "
+  KAFKA_BOOTSTRAP: "b-1.mcemskmce2.2tv0v2.c6.kafka.us-east-1.amazonaws.com:9094,b-2.mcemskmce2.2tv0v2.c6.kafka.us-east-1.amazonaws.com:9094"    
+  OPENSEARCH_ENDPOINT: "vpc-mce-search-mce-2-6nz7ghbiymqaldloeul5znr2om.us-east-1.es.amazonaws.com" 
   DYNAMODB_TABLE_CART: "mce-cart-mce-2"
->>>>>>> 604119d35203258af682b42100d5a4008a956b65
+
+
   PRODUCT_SERVICE_URL: "http://product.mce.svc.cluster.local"
   ORDER_SERVICE_URL: "http://order.mce.svc.cluster.local"
   CART_SERVICE_URL: "http://cart.mce.svc.cluster.local"

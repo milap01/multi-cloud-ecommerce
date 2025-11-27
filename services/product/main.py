@@ -89,3 +89,97 @@ def get_product(product_id: int):
         logger.error(f"Error fetching product {product_id}: {e}")
         REQUEST_COUNT.labels(method='GET', endpoint='/products/:id', status='500').inc()
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/products", status_code=201)
+def create_product(product: dict):
+    start_time = time.time()
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+
+        cur.execute(
+            """
+            INSERT INTO products (name, price, description)
+            VALUES (%s, %s, %s)
+            RETURNING id;
+            """,
+            (
+                product.get("name"),
+                product.get("price"),
+                product.get("description")
+            )
+        )
+
+        product_id = cur.fetchone()[0]
+        conn.commit()
+
+        cur.close()
+        conn.close()
+
+        REQUEST_COUNT.labels(method="POST", endpoint="/products", status="201").inc()
+        REQUEST_DURATION.labels(method="POST", endpoint="/products").observe(
+            time.time() - start_time
+        )
+
+        return {
+            "id": product_id,
+            "name": product.get("name"),
+            "price": product.get("price"),
+            "description": product.get("description")
+        }
+
+    except Exception as e:
+        logger.error(f"Error creating product: {e}")
+        REQUEST_COUNT.labels(method="POST", endpoint="/products", status="500").inc()
+        raise HTTPException(status_code=500, detail="Failed to create product")
+
+@app.put("/products/{product_id}")
+def update_product(product_id: int, product: dict):
+    start_time = time.time()
+    try:
+        if not product:
+            raise HTTPException(status_code=400, detail="No fields provided")
+
+        conn = get_conn()
+        cur = conn.cursor()
+
+        cur.execute("SELECT id FROM products WHERE id = %s;", (product_id,))
+        if not cur.fetchone():
+            REQUEST_COUNT.labels(method="PUT", endpoint="/products/:id", status="404").inc()
+            raise HTTPException(status_code=404, detail="Product not found")
+
+        fields = []
+        values = []
+
+        for key in ["name", "price", "description"]:
+            if key in product:
+                fields.append(f"{key} = %s")
+                values.append(product[key])
+
+        values.append(product_id)
+
+        query = f"""
+            UPDATE products
+            SET {', '.join(fields)}
+            WHERE id = %s;
+        """
+
+        cur.execute(query, tuple(values))
+        conn.commit()
+
+        cur.close()
+        conn.close()
+
+        REQUEST_COUNT.labels(method="PUT", endpoint="/products/:id", status="200").inc()
+        REQUEST_DURATION.labels(method="PUT", endpoint="/products/:id").observe(
+            time.time() - start_time
+        )
+
+        return {"message": "Product updated successfully"}
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating product {product_id}: {e}")
+        REQUEST_COUNT.labels(method="PUT", endpoint="/products/:id", status="500").inc()
+        raise HTTPException(status_code=500, detail="Failed to update product")
